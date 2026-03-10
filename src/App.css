@@ -1,0 +1,6 @@
+html::-webkit-scrollbar,body::-webkit-scrollbar{
+  display: none;
+}
+.scrollbar-hidden::-webkit-scrollbar{
+  display: none;
+}
