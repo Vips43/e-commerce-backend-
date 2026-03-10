@@ -1,9 +1,6 @@
 import mongoose from "mongoose";
 
-const uri =
-  import.meta.env.VITE_MONGO_URL || "mongodb://127.0.0.1:27017/usersDB";
-
-export const connectDB = async () => {
+export const connectDB = async (uri) => {
   try {
     await mongoose.connect(uri);
     console.log("MongoDB connected");
