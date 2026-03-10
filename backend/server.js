@@ -5,8 +5,8 @@ import { connectDB } from "./conn.js";
 import products from "./models/productModel.js";
 import loginSignupRoute from "./models/loginSignupModel.js";
 import cwRoutes from "./models/othModels.js";
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
 
 const app = express();
@@ -16,10 +16,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Load .env from one level up (project root)
-dotenv.config({ path: resolve(__dirname, '../.env') });
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: resolve(__dirname, "../.env") });
+}
 
-export const mongoUri = process.env.MONGO_URL || `mongodb://localhost:27017/usersDB`;
-
+export const mongoUri = process.env.MONGO_URL;
 
 app.use(cors());
 app.use(express.json());
