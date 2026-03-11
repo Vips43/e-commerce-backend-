@@ -9,24 +9,23 @@ function CategoryBar() {
   const setCategories = useDummyStore(state => state.setCategories);
   const getCatsByName = useDummyStore(state => state.getCatsByName);
 
-  const [active, setActive] = useState('');
-
+  
   useEffect(() => {
     const fetchCategories = async () => {
       await setCategories(active);
     };
     fetchCategories();
   }, [setCategories]);
-
+  
+  const [active, setActive] = useState('beauty');
   useEffect(() => {
-    if (categories && categories.length > 0 && !active) {
-      setActive(categories[0]);
+    if (categories && categories.length > 0) {
+      setActive(categories?.[0]);
       getCatsByName(categories[0]);
     }
   }, [categories, active, getCatsByName]);
 
-  const handleChange = (event, nextView) => {
-    console.log(event, nextView)
+  const handleChange = (e, nextView) => {
     if (nextView !== null) {
       setActive(nextView);
       getCatsByName(nextView);

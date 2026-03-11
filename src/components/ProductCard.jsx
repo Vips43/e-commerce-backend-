@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useWishStore } from '../store/wishlistStore';
 import { useAuthStore } from '../store/loginSignupStore';
 import { useDummyStore } from '../store/dummyStore';
@@ -6,31 +6,32 @@ import { MdOutlineShoppingBag } from "react-icons/md";
 import Skeleton from '@mui/material/Skeleton';
 import WishlistButton from './oth_Component/WishlistButton';
 import { useCartStore } from '../store/cartStore';
-import { motion } from 'framer-motion'
-import AddToCartBtn from './oth_Component/AddToCartBtn';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 function ProductCard() {
   const navigate = useNavigate();
+  const [toast, setToast] = useState({ open: false, message: '', severity: 'success' });
 
   const user = useAuthStore(state => state.user);
   const setAddWishlist = useWishStore(state => state.setAddWishlist);
   const removeWishlist = useWishStore(state => state.removeWishlist);
   const getWishlist = useWishStore(state => state.getWishlist);
   const wishlist = useWishStore(state => state.wishlist);
-  const { catsByName, loading } = useDummyStore()
+  const { catsByName, loading } = useDummyStore();
   const { addToCart, getUserCart, cart, removeFromCart } = useCartStore();
 
   useEffect(() => {
     if (user?.id) {
-      getWishlist(user.id)
-      getUserCart(user.id)
+      getWishlist(user.id);
+      getUserCart(user.id);
     }
-  }, [user?.id, getUserCart, getWishlist])
+  }, [user?.id, getUserCart, getWishlist]);
 
   const handleWishlist = (productId, isWishlisted) => {
     if (!user) return alert("Please login to access wishlist");
-
     if (isWishlisted) {
       removeWishlist(user.id, productId);
     } else {
@@ -39,40 +40,45 @@ function ProductCard() {
   };
 
   const handleCart = (e) => {
-    const productId = e.currentTarget.dataset.id
-    const inCart = cart.find(c => c.product == productId)
+    if (!user) return alert("Please login to add items to cart");
+
+    const productId = e.currentTarget.dataset.id;
+    const inCart = cart.find(c => String(c.product) === String(productId));
 
     if (inCart) {
-      removeFromCart(user.id, productId)
+      removeFromCart(user.id, productId);
+      setToast({ open: true, message: 'Removed from cart', severity: 'warning' });
     } else {
-      addToCart(user.id, productId, 1)
+      addToCart(user.id, productId, 1);
+      setToast({ open: true, message: 'Added to cart successfully!', severity: 'success' });
     }
-  }
+  };
+
+  const handleCloseToast = () => setToast({ ...toast, open: false });
 
   const displayProducts = loading ? Array.from(new Array(8)) : (catsByName?.data?.products || []);
 
   const variants = {
-    hidden: (direction) => ({
-      opacity: 0,
-      x: direction === 1 ? -300 : 300
-    }),
+    hidden: (direction) => ({ opacity: 0, x: direction === 1 ? -300 : 300 }),
     visible: { opacity: 1, x: 0 }
-  }
+  };
+
   return (
     <section>
       <div className="p-3 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 bg-gray-100">
         {displayProducts?.map((pr, index) => {
-
-          const inCart = cart.find(c => c?.product == pr?.id)
-
+          const inCart = cart.find(c => String(c?.product) === String(pr?.id));
           const isWishlisted = pr ? wishlist?.some(w => String(w.productId) === String(pr.id)) : false;
 
           return (
-            <motion.div variants={variants}
+            <motion.div
+              variants={variants}
               initial="hidden"
               animate="visible"
               exit="hidden"
-              key={pr?.id || index} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-2xl transition-shadow duration-300">
+              key={pr?.id || index}
+              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-2xl transition-shadow duration-300"
+            >
               <div className="relative h-56 bg-gray-300">
                 {pr ? (
                   <img loading='lazy' src={pr.thumbnail} alt={pr.title} className="w-full h-full object-cover" />
@@ -116,8 +122,9 @@ function ProductCard() {
                   </p>
 
                   {pr ? (
-                    <button data-id={pr.id}
-                      className={`${inCart ? "bg-red-700" : "bg-cyan-700"} text-white text-sm font-semibold py-2 px-4 rounded-lg shadow-md flex items-center gap-2 transition-all active:scale-95"`}
+                    <button
+                      data-id={pr.id}
+                      className={`${user ? (inCart ? "bg-red-700" : "bg-cyan-700") : "bg-cyan-700"} text-white text-sm font-semibold py-2 px-4 rounded-lg shadow-md flex items-center gap-2 transition-all active:scale-95`}
                       onClick={handleCart}
                     >
                       <span>{inCart ? "Remove" : "Add"}</span> <MdOutlineShoppingBag />
@@ -131,6 +138,12 @@ function ProductCard() {
           );
         })}
       </div>
+
+      <Snackbar open={toast.open} autoHideDuration={3000} onClose={handleCloseToast} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+        <Alert onClose={handleCloseToast} severity={toast.severity} variant="filled" sx={{ width: '100%' }}>
+          {toast.message}
+        </Alert>
+      </Snackbar>
     </section>
   );
 }
