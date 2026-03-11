@@ -4,9 +4,6 @@ import { useDummyStore } from "../store/dummyStore";
 import { useCartStore } from "../store/cartStore";
 
 function ShoppingCart() {
-  const handleIncrease = (id) => console.log("Inc", id);
-  const handleDecrease = (id) => console.log("Dec", id);
-  const handleRemove = (id) => console.log("Remove", id);
   const { cart } = useCartStore();
   const { productById, cartProducts } = useDummyStore();
 
@@ -30,9 +27,6 @@ function ShoppingCart() {
               <CartCard
                 key={item.id}
                 item={item}
-                onIncrease={handleIncrease}
-                onDecrease={handleDecrease}
-                onRemove={handleRemove}
               />
             )
               : <p className="text-center py-4 text-sm text-gray-400">

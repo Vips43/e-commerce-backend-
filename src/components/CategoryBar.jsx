@@ -13,7 +13,7 @@ function CategoryBar() {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      await setCategories();
+      await setCategories(active);
     };
     fetchCategories();
   }, [setCategories]);

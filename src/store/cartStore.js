@@ -3,6 +3,7 @@ import { create } from "zustand";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const useCartStore = create((set, get) => ({
+  userCart: [],
   cart: [],
   loading: false,
   error: null,
@@ -14,34 +15,14 @@ export const useCartStore = create((set, get) => ({
     try {
       const res = await fetch(`${backendUrl}/user/cart/${userId}`);
       const data = await res.json();
-      set({ cart: data, loading: false });
+      set({ cart: data, userCart: [], loading: false });
     } catch (error) {
       console.log("error fetching cart", error);
       set({ loading: false, error });
     }
   },
 
-  addToCart: async (userId, productId, quantity = 1) => {
-    const currentCart = get().cart;
-
-    const existingItemIndex = currentCart.findIndex(
-      (item) => (item.product?.id || item.product) === productId,
-    );
-
-    let optimisticCart = [...currentCart];
-
-    if (existingItemIndex > -1) {
-      // Item exists, increment quantity
-      optimisticCart[existingItemIndex] = {
-        ...optimisticCart[existingItemIndex],
-        quantity: optimisticCart[existingItemIndex].quantity + quantity,
-      };
-    } else {
-      optimisticCart.push({ product: productId, quantity: quantity });
-    }
-
-    set({ cart: optimisticCart });
-
+  addToCart: async (userId, productId, quantity) => {
     try {
       const res = await fetch(`${backendUrl}/user/add-to-cart`, {
         method: "PUT",
@@ -98,14 +79,6 @@ export const useCartStore = create((set, get) => ({
   },
 
   removeFromCart: async (userId, productId) => {
-    const currentCart = get().cart;
-
-    // OPTIMISTIC UPDATE
-    const optimisticCart = currentCart.filter(
-      (item) => (item.product?.id || item.product) !== productId,
-    );
-    set({ cart: optimisticCart });
-
     try {
       const res = await fetch(`${backendUrl}/user/cart/remove`, {
         method: "DELETE",
@@ -113,10 +86,11 @@ export const useCartStore = create((set, get) => ({
         body: JSON.stringify({ userId, productId }),
       });
       const data = await res.json();
+      console.log(data)
       set({ cart: data.cart || data });
     } catch (error) {
       console.log("Error removing item:", error);
-      set({ cart: currentCart }); // Revert
+      set({ cart: error }); // Revert
     }
   },
   emptyCart: async (userId) => {

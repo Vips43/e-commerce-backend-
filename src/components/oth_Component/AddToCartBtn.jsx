@@ -1,5 +1,4 @@
 import { MdOutlineShoppingBag } from "react-icons/md";
-import { useEffect, useState } from "react";
 import { useCartStore } from "../../store/cartStore";
 import { useAuthStore } from "../../store/loginSignupStore";
 import IncDecBtn from "./IncDecBtn";
@@ -8,10 +7,15 @@ function AddToCartBtn({ productId }) {
   const user = useAuthStore((state) => state.user);
 
   const cart = useCartStore((state) => state.cart);
+  const addToCart = useCartStore((state) => state.addToCart);
 
   const cartItem = cart.find((c) => String(c.product) === String(productId));
   const quantity = cartItem ? cartItem.quantity : 0;
   const isInCart = quantity > 0;
+
+  const handleAdd =async()=>{
+    await addToCart(user.id,productId)
+  }
 
   return (
     <div onClick={(e) => e.preventDefault()}>

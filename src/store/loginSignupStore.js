@@ -31,8 +31,8 @@ export const useAuthStore = create((set, get) => ({
       console.log(data);
 
       localStorage.setItem("user", JSON.stringify(data));
-      const userName = data?.user;
-      set({ user: userName, loading: false });
+
+      set({ user: data, loading: false });
     } catch (error) {
       console.log("error in login:", error);
       set({ loading: false });

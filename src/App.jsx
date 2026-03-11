@@ -5,7 +5,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Signup from "./pages/Signup";
 import HomePage from './pages/HomePage';
 import AddToCartBtn from './components/oth_Component/AddToCartBtn';
+import ProductDetails from './pages/ProductDetail';
 
+const url = import.meta.env.VITE_BACKEND_URL
+console.log(url)
 const router = createBrowserRouter([
   {
     path: "/",
@@ -15,6 +18,7 @@ const router = createBrowserRouter([
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Signup /> },
       { path: "/btn", element: <AddToCartBtn /> },
+      { path: "/:productName", element: <ProductDetails /> },
     ]
   }
 ])

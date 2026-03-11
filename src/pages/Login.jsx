@@ -12,7 +12,6 @@ function Login() {
     console.log("submitted")
     const formData = new FormData(e.target);
     const formObj = Object.fromEntries(formData)
-
     setLogin(formObj)
     navigate("/")
   }

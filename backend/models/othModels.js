@@ -106,6 +106,25 @@ cwRoutes.delete("/wishlist/remove", async (req, res) => {
   }
 });
 
+cwRoutes.delete("/cart/remove", async (req, res) => {
+  const { productId, userId } = req.body;
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ msg: "User not found" });
+
+    user.cart = user.cart.filter(
+      (item) => item.product.toString() !== productId.toString(),
+    );
+    await user.save();
+
+    console.log(`items remove from cart ${productId}`);
+    res.status(200).json({ cart: user.cart, msg: `Item removed` });
+  } catch (error) {
+    console.error("Delete Error:", error);
+    res.status(500).json({ msg: error.message });
+  }
+});
+
 cwRoutes.delete("/cart/empty", async (req, res) => {
   const { userId } = req.body;
   try {
@@ -123,7 +142,7 @@ cwRoutes.delete("/cart/empty", async (req, res) => {
     res.status(500).json({ msg: error.message });
   }
 });
-cwRoutes.delete("/cart/wishlist", async (req, res) => {
+cwRoutes.delete("/wishlist/empty", async (req, res) => {
   const { userId } = req.body;
   try {
     const user = await User.findByIdAndUpdate(
@@ -134,9 +153,7 @@ cwRoutes.delete("/cart/wishlist", async (req, res) => {
       { new: true },
     );
     await user.save();
-    res
-      .status(200)
-      .json({ wishlist: user.wishlistcart, msg: `wishlist empty` });
+    res.status(200).json({ wishlist: user.wishlist, msg: `wishlist empty` });
   } catch (error) {
     console.error("wishlist empty Error:", error);
     res.status(500).json({ msg: error.message });

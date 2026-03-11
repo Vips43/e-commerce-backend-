@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuthStore } from '../store/loginSignupStore'
 import ProductCard from '../components/ProductCard'
 import CategoryBar from '../components/CategoryBar'
 
 function HomePage() {
+  const [cats, setCats] = useState([])
   const user = useAuthStore(state => state.user)
   const getLoggedStatus = useAuthStore(state => state.getLoggedStatus)
   useEffect(() => {

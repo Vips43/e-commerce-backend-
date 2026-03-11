@@ -1,9 +1,9 @@
 import express from "express";
 import { User } from "../conn.js";
 
-const loginSignupRoute = express.Router();
+const authRoutes = express.Router();
 
-loginSignupRoute.post("/signup", async (req, res) => {
+authRoutes.post("/signup", async (req, res) => {
   try {
     const { name, email, pass } = req.body;
     if (name && email && pass) {
@@ -27,7 +27,7 @@ loginSignupRoute.post("/signup", async (req, res) => {
   }
 });
 
-loginSignupRoute.post("/login", async (req, res) => {
+authRoutes.post("/login", async (req, res) => {
   try {
     const { email, pass } = req.body;
 
@@ -65,4 +65,4 @@ loginSignupRoute.post("/login", async (req, res) => {
   }
 });
 
-export default loginSignupRoute;
+export default authRoutes;

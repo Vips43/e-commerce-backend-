@@ -6,12 +6,12 @@ import { useAuthStore } from "../../store/loginSignupStore";
 function CartCard({ item, onRemove }) {
   const user = useAuthStore((state) => state.user);
   const { cart } = useCartStore();
-
   const cartItem = cart.find((c) => String(c.product) === String(item.id));
   const quantity = cartItem ? cartItem.quantity : 1;
-
+  console.log(item)
   const {
     title = item.title,
+    productId = item.id,
     price = item.price || 0,
     thumbnail = item.thumbnail,
     category = item.category,
@@ -66,9 +66,9 @@ function CartCard({ item, onRemove }) {
             </p>
           </div>
           {/* Quantity Controls */}
-          <IncDecBtn quantity={quantity}
+          {/* <IncDecBtn quantity={quantity}
             user={user}
-            productId={productId} />
+            productId={productId} /> */}
         </div>
       </div>
     </div>

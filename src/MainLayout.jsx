@@ -8,7 +8,7 @@ function MainLayout() {
       <>
         <NavBar />
       </>
-      <main className='scrollbar-hidden'>
+      <main className='scrollbar-hidden bg-white'>
         <Outlet />
       </main>
     </>

@@ -8,35 +8,45 @@ import WishlistButton from './oth_Component/WishlistButton';
 import { useCartStore } from '../store/cartStore';
 import { motion } from 'framer-motion'
 import AddToCartBtn from './oth_Component/AddToCartBtn';
+import { useNavigate } from 'react-router-dom';
 
 function ProductCard() {
+  const navigate = useNavigate();
+
   const user = useAuthStore(state => state.user);
   const setAddWishlist = useWishStore(state => state.setAddWishlist);
   const removeWishlist = useWishStore(state => state.removeWishlist);
   const getWishlist = useWishStore(state => state.getWishlist);
   const wishlist = useWishStore(state => state.wishlist);
-  const catsByName = useDummyStore(state => state.catsByName);
-  const loading = useDummyStore(state => state.loading);
-  const { setAddToCart } = useCartStore();
+  const { catsByName, loading } = useDummyStore()
+  const { addToCart, getUserCart, cart, removeFromCart } = useCartStore();
 
   useEffect(() => {
-    if (user?.id)
+    if (user?.id) {
       getWishlist(user.id)
-  }, [user?.id, getWishlist])
+      getUserCart(user.id)
+    }
+  }, [user?.id, getUserCart, getWishlist])
 
   const handleWishlist = (productId, isWishlisted) => {
     if (!user) return alert("Please login to access wishlist");
+
     if (isWishlisted) {
       removeWishlist(user.id, productId);
     } else {
       setAddWishlist(user.id, productId);
     }
   };
-  const handleCart = (productId) => {
-    if (user) {
-      let quantity;
-      setAddToCart(user.id, productId, quantity = 1)
-    } else return alert("Please login to access cart")
+
+  const handleCart = (e) => {
+    const productId = e.currentTarget.dataset.id
+    const inCart = cart.find(c => c.product == productId)
+
+    if (inCart) {
+      removeFromCart(user.id, productId)
+    } else {
+      addToCart(user.id, productId, 1)
+    }
   }
 
   const displayProducts = loading ? Array.from(new Array(8)) : (catsByName?.data?.products || []);
@@ -50,8 +60,10 @@ function ProductCard() {
   }
   return (
     <section>
-      <main className="p-3 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 bg-gray-300">
+      <div className="p-3 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 bg-gray-100">
         {displayProducts?.map((pr, index) => {
+
+          const inCart = cart.find(c => c?.product == pr?.id)
 
           const isWishlisted = pr ? wishlist?.some(w => String(w.productId) === String(pr.id)) : false;
 
@@ -84,7 +96,7 @@ function ProductCard() {
 
                 {pr ? (
                   <>
-                    <h2 className="text-lg font-bold text-gray-900 line-clamp-1">
+                    <h2 className="text-lg font-bold text-gray-900 line-clamp-1 cursor-pointer hover:underline" onClick={() => navigate(`/${pr.title}`)}>
                       {pr.title}
                     </h2>
                     <p className="text-sm text-gray-500 mt-1 line-clamp-2 h-10">
@@ -104,7 +116,12 @@ function ProductCard() {
                   </p>
 
                   {pr ? (
-                    <AddToCartBtn productId={pr.id} />
+                    <button data-id={pr.id}
+                      className={`${inCart ? "bg-red-700" : "bg-cyan-700"} text-white text-sm font-semibold py-2 px-4 rounded-lg shadow-md flex items-center gap-2 transition-all active:scale-95"`}
+                      onClick={handleCart}
+                    >
+                      <span>{inCart ? "Remove" : "Add"}</span> <MdOutlineShoppingBag />
+                    </button>
                   ) : (
                     <Skeleton variant="rounded" width={80} height={35} />
                   )}
@@ -113,7 +130,7 @@ function ProductCard() {
             </motion.div>
           );
         })}
-      </main>
+      </div>
     </section>
   );
 }
