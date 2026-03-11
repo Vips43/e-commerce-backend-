@@ -4,16 +4,20 @@ import { useAuthStore } from "../store/loginSignupStore";
 
 function Login() {
   const setLogin = useAuthStore(state => state.setLogin)
+  const user = useAuthStore(state => state.user)
+  const err = useAuthStore(state => state.err)
   const navigate = useNavigate();
 
-  const handlesubmit = (e) => {
-
+  const handlesubmit = async (e) => {
     e.preventDefault();
     console.log("submitted")
     const formData = new FormData(e.target);
     const formObj = Object.fromEntries(formData)
-    setLogin(formObj)
-    navigate("/")
+    await setLogin(formObj)
+
+    if (user) {
+      navigate("/")
+    }
   }
 
   return (
@@ -43,6 +47,12 @@ function Login() {
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition">
               Login
             </button>
+
+            {err && (
+              <div style={{ color: 'red', marginBottom: '10px', fontWeight: "700" }}>
+                {err}
+              </div>
+            )}
 
             <p className="text-center text-sm text-gray-600 mt-2">
               Don’t have an account?

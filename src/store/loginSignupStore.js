@@ -5,6 +5,7 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const useAuthStore = create((set, get) => ({
   user: null,
   loading: false,
+  err:null,
 
   getLoggedStatus: () => {
     const storedData = localStorage.getItem("user");
@@ -25,17 +26,20 @@ export const useAuthStore = create((set, get) => ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(val),
       });
-      if (!res.ok) return set({ login: res });
 
       const data = await res.json();
-      console.log(data);
+
+      if (!res.ok) {
+        set({ loading: false, user: null, err: data.message || "login failed" });
+        return;
+      }
 
       localStorage.setItem("user", JSON.stringify(data));
-
-      set({ user: data, loading: false });
+      set({ user: data.user, loading: false });
     } catch (error) {
       console.log("error in login:", error);
       set({ loading: false });
+      return false;
     }
   },
   setSignup: async (val) => {

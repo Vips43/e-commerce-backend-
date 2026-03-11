@@ -11,7 +11,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 dotenv.config()
-const mongoUri =  process.env.MONGO_URL;
+const mongoUri = `mongodb://localhost:27017/usersDB` || process.env.MONGO_URL;
 
 app.use(cors());
 app.use(express.json());
