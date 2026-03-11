@@ -8,22 +8,23 @@ function CategoryBar() {
   const categories = useDummyStore(state => state.categories);
   const setCategories = useDummyStore(state => state.setCategories);
   const getCatsByName = useDummyStore(state => state.getCatsByName);
+  const catsByName = useDummyStore(state => state.catsByName);
 
-  
+
   useEffect(() => {
     const fetchCategories = async () => {
       await setCategories(active);
     };
     fetchCategories();
   }, [setCategories]);
-  
-  const [active, setActive] = useState('beauty');
+  const [active, setActive] = useState(categories?.[0] || '');
   useEffect(() => {
-    if (categories && categories.length > 0) {
+    if (categories && categories.length > 0 && !active) {
       setActive(categories?.[0]);
       getCatsByName(categories[0]);
     }
-  }, [categories, active, getCatsByName]);
+    console.log(catsByName)
+  }, [categories]);
 
   const handleChange = (e, nextView) => {
     if (nextView !== null) {
@@ -31,7 +32,7 @@ function CategoryBar() {
       getCatsByName(nextView);
     }
   };
-  if(!categories) return;
+  if (!categories) return;
 
   return (
     <div className='p-2 overflow-x-auto scrollbar-hidden'>

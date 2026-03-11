@@ -1,18 +1,17 @@
 import { FaMinus, FaPlus } from "react-icons/fa";
+import { useCartStore } from "../../store/cartStore";
 
-function IncDecBtn({ user, productId }) {
+function IncDecBtn({ user, productId, quantity }) {
   const addToCart = useCartStore((state) => state.addToCart);
   const decreaseQty = useCartStore((state) => state.decreaseQuantity);
 
   const handleAdd = (e) => {
     e.preventDefault();
-    if (!user) return alert("Please login to use cart");
     addToCart(user.id, productId, 1);
   };
 
   const handleDecrease = (e) => {
     e.preventDefault();
-    if (!user) return;
     decreaseQty(user.id, productId);
   };
 

@@ -48,7 +48,7 @@ function NavBar() {
     if (!user) return alert("please login to use cart")
 
     if (!cartDropDown)
-      await fetchProductById(cart.map(c => c.product));
+      await fetchProductById(cart);
     setCartDropDown(!cartDropDown);
 
   }

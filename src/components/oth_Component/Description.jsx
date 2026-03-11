@@ -1,75 +1,84 @@
-import { Box, Divider, Typography } from "@mui/material";
+import React from "react";
+import { Box, Typography, Chip, Stack } from "@mui/material";
 
 function Description({ item }) {
   return (
-    <Box sx={{ p: 2 }}>
-      <Typography variant="h6" fontWeight="bold" gutterBottom>
-        Product Description
+    <Box sx={{ maxWidth: "100%" }}>
+      <Typography variant="h5" fontWeight="700" gutterBottom color="text.primary">
+        Product Details
+      </Typography>
+      <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 3 }}>
+        {item?.title}
       </Typography>
 
-      <Divider sx={{ mb: 2 }} />
-
-      <Box sx={{ display: "grid", rowGap: 1.5 }}>
-        <InfoRow label="Brand" value={item.brand || "N/A"} />
-
-        <InfoRow
-          label="Product Type"
-          value={item.tags?.length ? item.tags.join(", ") : "N/A"}
+      <Stack spacing={0.5} sx={{ borderTop: "1px solid", borderColor: "divider", pt: 2 }}>
+        <InteractiveRow label="Brand" value={item?.brand || "N/A"} />
+        
+        <InteractiveRow 
+          label="Product Type" 
+          value={
+            item?.tags?.length ? (
+              <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                {item.tags.map((tag, idx) => (
+                  <Chip key={idx} label={tag} size="small" variant="outlined" />
+                ))}
+              </Stack>
+            ) : "N/A"
+          } 
         />
 
-        <InfoRow
-          label="Description"
-          value={item.description || "N/A"}
-          multiline
+        <InteractiveRow label="Description" value={item?.description || "N/A"} multiline />
+        <InteractiveRow label="Shipping Info" value={item?.shippingInformation || "Standard shipping"} />
+        <InteractiveRow label="SKU" value={item?.sku || "N/A"} />
+        <InteractiveRow label="Warranty" value={item?.warrantyInformation || "No warranty"} />
+        <InteractiveRow label="Return Policy" value={item?.returnPolicy || "No return policy"} />
+        
+        <InteractiveRow 
+          label="Availability" 
+          value={
+            <Chip 
+              label={item?.availabilityStatus || "Unavailable"} 
+              size="small"
+              color={item?.availabilityStatus?.toLowerCase().includes("stock") ? "success" : "default"}
+              sx={{ fontWeight: 600 }}
+            />
+          } 
         />
-
-        <InfoRow
-          label="Shipping Info"
-          value={item.shippingInformation || "Standard shipping"}
-        />
-
-        <InfoRow label="SKU" value={item.sku || "N/A"} />
-
-        <InfoRow
-          label="Warranty"
-          value={item.warrantyInformation || "No warranty"}
-        />
-
-        <InfoRow
-          label="Return Policy"
-          value={item.returnPolicy || "No return policy"}
-        />
-
-        <InfoRow
-          label="Availability"
-          value={item.availabilityStatus || "Unavailable"}
-        />
-      </Box>
+      </Stack>
     </Box>
   );
 }
 
-/* 🔹 Reusable row */
-function InfoRow({ label, value, multiline = false }) {
+/* 🔹 Interactive Row Component with Hover Effects */
+function InteractiveRow({ label, value, multiline = false }) {
   return (
     <Box
       sx={{
-        display: "grid",
-        gridTemplateColumns: "140px 1fr",
-        alignItems: multiline ? "start" : "center",
-        gap: 2,
+        display: "flex",
+        flexDirection: { xs: "column", sm: "row" },
+        alignItems: { xs: "flex-start", sm: multiline ? "flex-start" : "center" },
+        gap: { xs: 1, sm: 3 },
+        p: 1.5,
+        borderRadius: 2,
+        transition: "background-color 0.2s ease-in-out",
+        "&:hover": { bgcolor: "grey.50" },
       }}
     >
-      <Typography variant="body2" color="text.secondary">
+      <Typography 
+        variant="body2" 
+        color="text.secondary" 
+        sx={{ minWidth: 140, fontWeight: 500 }}
+      >
         {label}
       </Typography>
 
-      <Typography
-        variant="body2"
-        sx={{ color: "text.primary", lineHeight: multiline ? 1.6 : 1.4 }}
-      >
-        {value}
-      </Typography>
+      <Box sx={{ flexGrow: 1, color: "text.primary", lineHeight: multiline ? 1.6 : 1.4 }}>
+        {typeof value === 'string' ? (
+          <Typography variant="body2">{value}</Typography>
+        ) : (
+          value
+        )}
+      </Box>
     </Box>
   );
 }

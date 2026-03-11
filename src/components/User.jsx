@@ -2,11 +2,17 @@ import { FiLogOut } from "react-icons/fi";
 import { useAuthStore } from "../store/loginSignupStore";
 import { useWishStore } from "../store/wishlistStore";
 import { FaRegHeart, FaHeart } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 function User({ setShow, show }) {
+  const navigate = useNavigate()
   const user = useAuthStore(state => state.user)
   const wishlist = useWishStore(state => state.wishlist);
   const logout = useAuthStore(state => state.logout);
+
+  const handleUser =()=>{
+    navigate(`/user/${user.name}`)
+  }
 
   return (
     <>
@@ -16,7 +22,8 @@ function User({ setShow, show }) {
         <div className="relative bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden">
           <div className="p-4 border-b border-gray-50 bg-gray-50/50">
             <p className="text-sm text-gray-500">Welcome back,</p>
-            <p className="text-base font-semibold text-gray-800 capitalize">{user ? user.name : "Guest user"}</p>
+            <p className="text-base font-semibold text-gray-800 capitalize" 
+            onClick={handleUser}>{user ? user.name : "Guest user"}</p>
           </div>
 
           <div className="p-2">

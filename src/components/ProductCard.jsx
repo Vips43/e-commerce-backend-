@@ -59,9 +59,12 @@ function ProductCard() {
   const displayProducts = loading ? Array.from(new Array(8)) : (catsByName?.data?.products || []);
 
   const variants = {
-    hidden: (direction) => ({ opacity: 0, x: direction === 1 ? -300 : 300 }),
-    visible: { opacity: 1, x: 0 }
-  };
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0,
+    transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }
+  },
+  exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 }}
+};
 
   return (
     <section>

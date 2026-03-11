@@ -23,9 +23,9 @@ function ShoppingCart() {
           <div
             className="max-h-60 overflow-y-auto p-2 space-y-2"
           >
-            {productById ? productById.map(item =>
+            {productById && productById ? productById?.map(item =>
               <CartCard
-                key={item.id}
+                key={item?.id}
                 item={item}
               />
             )

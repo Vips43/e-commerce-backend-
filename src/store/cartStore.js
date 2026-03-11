@@ -8,7 +8,6 @@ export const useCartStore = create((set, get) => ({
   loading: false,
   error: null,
 
-  // 1. Get Cart
   getUserCart: async (userId) => {
     if (!userId) return;
     set({ loading: true });
