@@ -129,10 +129,8 @@ cwRoutes.delete("/cart/empty", async (req, res) => {
   const { userId } = req.body;
   try {
     const user = await User.findByIdAndUpdate(
-      {
-        _id: userId,
-        $set: { cart: {} },
-      },
+      userId,
+      { $set: { cart: [] } },
       { new: true },
     );
     await user.save();
@@ -146,10 +144,8 @@ cwRoutes.delete("/wishlist/empty", async (req, res) => {
   const { userId } = req.body;
   try {
     const user = await User.findByIdAndUpdate(
-      {
-        _id: userId,
-        $set: { wishlist: {} },
-      },
+      userId,
+      { $set: { wishlist: [] } },
       { new: true },
     );
     await user.save();

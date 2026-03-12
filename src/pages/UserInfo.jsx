@@ -1,118 +1,199 @@
 import React, { useEffect, useState } from 'react';
 import UserCartProducts from '../components/user/UserCartProducts';
-import UserWishlistProducts from '../components/user/UserWishlistProducts';
+import { FaRegUserCircle } from "react-icons/fa";
 import { Tab, Tabs, Box, Typography } from '@mui/material';
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/loginSignupStore';
 import { useDummyStore } from '../store/dummyStore';
+import { useWishStore } from '../store/wishlistStore';
+import UserWishlistCard from '../components/UserWishlistCard';
 
 function UserInfo() {
   const [activeTab, setActiveTab] = useState(0);
-  
+
   const { getUserCart, cart } = useCartStore();
-  const { user, getLoggedStatus } = useAuthStore();
-  const { productById, fetchProductById } = useDummyStore();
-  
-  const [qty, setQty] = useState(cart.map(c => c.quantity))
+  const { getLoggedStatus, user } = useAuthStore();
+  const { getWishlist, wishlist } = useWishStore();
+  const { productById, fetchProductById, loading } = useDummyStore();
+
+  const [qty, setQty] = useState([]);
+
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
   };
 
   useEffect(() => {
+    if (cart)
+      setQty(cart?.map(c => c.quantity));
     getLoggedStatus();
-  }, [])
+  }, []);
 
   useEffect(() => {
     const getData = async () => {
       if (activeTab === 1) {
         await getUserCart();
-        await fetchProductById(cart)
+        await fetchProductById(cart);
+      } else if (activeTab === 0) {
+        await getWishlist(user.id)
+        await fetchProductById(wishlist);
       }
     };
     getData();
-  }, [cart]);
+  }, [activeTab, getUserCart]);
+
+  if (loading) {
+    return (<div className='w-full h-[calc(100dvh-8rem)] grid place-items-center'><div className='w-12 aspect-square rounded-full border-y-4 border-y-blue-600 animate-spin'></div></div>)
+  }
 
   return (
-    <section className='grid grid-cols-[auto_1fr] md:grid-cols-[1fr_3fr] min-h-screen bg-gray-50'>
-      <aside className='bg-white border-r border-gray-200 p-4'>
-        <Typography variant="h6" className="mb-6 px-4 font-bold text-gray-700 hidden lg:block">
-          My Account
-        </Typography>
+    <div className='grid grid-cols-[80px_1fr_10px] md:grid-cols-[260px_1fr] min-h-screen bg-gray-50 transition-all duration-300'>
+      <aside className='bg-white border-r border-gray-200 py-6 px-1 md:px-4 sticky top-0 h-screen overflow-y-auto flex flex-col items-center md:items-stretch shadow-sm'>
+        <h6
+          className="mb-8 px-2 font-semibold text-2xl text-blue-500  tracking-wide inline-flex items-center gap-4 capitalize"
+        >
+          <FaRegUserCircle /> <span className='hidden md:block'> {user?.name}</span>
+        </h6>
+
         <Tabs
           orientation="vertical"
           value={activeTab}
           onChange={handleChange}
-          TabIndicatorProps={{ style: { display: 'none' } }} // Hide the bar
-          sx={{ alignItems: 'flex-start', minHeight: 0 }}
+          TabIndicatorProps={{ style: { display: 'none' } }}
+          sx={{
+            width: '100%',
+            alignItems: 'center',
+            '@media (min-width: 768px)': {
+              alignItems: 'stretch'
+            },
+            '& .MuiTabs-flexContainer': { gap: 1.5 }
+          }}
         >
           <Tab
-            icon={<FaHeart />}
+            icon={<FaHeart size={20} />}
             iconPosition="start"
-            label={<span className="hidden lg:inline">Wishlist Items</span>}
+            label={<span className="hidden md:inline whitespace-nowrap text-base">Wishlist Items</span>}
             disableRipple
             sx={{
+              minHeight: '45px',
+              mx: 'auto',
+              borderRadius: '12px',
               textTransform: 'none',
               fontWeight: 600,
-              minHeight: 0,
-              py: 1.5,
-              width: '100%',
-              justifyContent: 'flex-start',
-              '&.Mui-selected': {
-                bgcolor: "#f3f4f6",
-                borderRadius: '8px',
-                '& .MuiTab-iconWrapper': { color: '#ef4444' },
+              color: '#6b7280',
+              transition: 'all 0.2s ease-in-out',
+              width: '45px',
+              minWidth: '45px',
+              justifyContent: 'center',
+              px: 0,
+              '& .MuiTab-iconWrapper': {
+                margin: 0
               },
+              '@media (min-width: 768px)': {
+                width: '100%',
+                minWidth: '100%',
+                justifyContent: 'flex-start',
+                px: 2.5,
+                '& .MuiTab-iconWrapper': {
+                  margin: '0 16px 0 0'
+                }
+              },
+              '&:hover': {
+                bgcolor: '#f9fafb',
+              },
+              '&.Mui-selected': {
+                color: '#ef4444',
+                bgcolor: '#fef2f2',
+              }
             }}
           />
 
           <Tab
-            icon={<FaShoppingCart />}
+            icon={<FaShoppingCart size={20} />}
             iconPosition="start"
-            label={<span className="hidden lg:inline">Cart Items</span>}
+            label={<span className="hidden md:inline whitespace-nowrap text-base">Cart Items</span>}
             disableRipple
             sx={{
+              minHeight: '45px',
+              mx: 'auto',
+              borderRadius: '12px',
               textTransform: 'none',
               fontWeight: 600,
-              minHeight: 0,
-              py: 1.5,
-              width: '100%',
-              justifyContent: 'flex-start',
+              color: '#6b7280',
+              transition: 'all 0.2s ease-in-out',
+              width: '45px',
+              minWidth: '40px',
+              justifyContent: 'center',
+              px: 0,
+              '& .MuiTab-iconWrapper': {
+                margin: 0
+              },
+              '@media (min-width: 768px)': {
+                width: '100%',
+                minWidth: '100%',
+                justifyContent: 'flex-start',
+                px: 2.5,
+                '& .MuiTab-iconWrapper': {
+                  margin: '0 16px 0 0'
+                }
+              },
+              '&:hover': {
+                bgcolor: '#f9fafb',
+              },
               '&.Mui-selected': {
                 color: '#2563eb',
-                bgcolor: "#eff6ff",
-                borderRadius: '8px',
+                bgcolor: '#eff6ff',
               }
             }}
           />
         </Tabs>
       </aside>
 
-      <section className='p-8'>
+      <main className='md:p-10 w-full max-w-300 mx-auto overflow-x-hidden'>
         <Box role="tabpanel">
           {activeTab === 0 && (
-            <div className="animate-in fade-in duration-300">
-              <Typography variant="h4" className="mb-6 font-bold">Your Wishlist</Typography>
-              <UserWishlistProducts />
+            <div className="animate-in fade-in duration-500">
+              <h5 className="my-6 ml-5 font-semibold text-2xl text-gray-800 tracking-tight">
+                Your Wishlist
+              </h5>
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 divide-y grid gap-3 grid-cols-[repeat(auto-fill,minmax(170px,1fr))] divide-gray-100">
+                {productById.length > 0 ? (
+                  productById.map((item, i) => (
+                    <UserWishlistCard userId={user.id} key={i} quantity={qty} product={item} />
+                  ))
+                ) : (
+                  <div className="py-16 flex flex-col items-center justify-center">
+                    <FaShoppingCart className="text-gray-200 text-6xl mb-4" />
+                    <p className="text-lg text-gray-500 font-medium">Your cart is empty</p>
+                  </div>
+                )}
+              </div>
             </div>
           )}
+
           {activeTab === 1 && (
-            <div className="animate-in fade-in duration-300">
-              <Typography variant="h4" className="mb-6 font-bold">Shopping Cart</Typography>
-              <div className="bg-white rounded-xl shadow-sm px-6 divide-y divide-gray-100">
+            <div className="animate-in fade-in duration-500">
+              <h5 className="my-6 font-semibold text-2xl ml-5 text-gray-800 tracking-tight">
+                Shopping Cart
+              </h5>
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 px-6 divide-y divide-gray-100">
                 {productById.length > 0 ? (
-                  productById.map((item,i) => (
+                  productById.map((item, i) => (
                     <UserCartProducts key={i} quantity={qty} item={item} />
                   ))
                 ) : (
-                  <p className="py-10 text-center text-gray-400">Your cart is empty</p>
+                  <div className="py-16 flex flex-col items-center justify-center">
+                    <FaShoppingCart className="text-gray-200 text-6xl mb-4" />
+                    <p className="text-lg text-gray-500 font-medium">Your cart is empty</p>
+                  </div>
                 )}
               </div>
             </div>
           )}
         </Box>
-      </section>
-    </section>
+      </main>
+      <aside className='bg-white'></aside>
+    </div>
   );
 }
 

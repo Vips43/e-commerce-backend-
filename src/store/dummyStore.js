@@ -18,47 +18,57 @@ export const useDummyStore = create((set, get) => ({
 
       set({ categories: data?.data, loading: true });
     } catch (error) {
-      console.log("error in fetching categories:", error);
+      console.error("error in fetching categories:", error);
       set({ error: error, loading: false });
     }
   },
   getCatsByName: async (id) => {
-    if (get().catsByName[id]) return;
+    if (!id || get().catsByName[id]) return;
+
     set({ loading: true });
     try {
-      console.log(id);
       const res = await fetch(`${backendUrl}/product/categories/${id}`);
       const data = await res.json();
 
       set({ catsByName: data, loading: false });
     } catch (error) {
-      console.log("error in fetching categories:", error);
+      console.error("error in fetching categories:", error);
       set({ error: error, loading: false });
     }
   },
+
   fetchProductById: async (cart) => {
-    const ids = Array.isArray(cart) ? cart.map((c) => c.product) : [cart];
-    const currentCache = get().productById;
+    if (!cart) return;
+    const items = Array.isArray(cart) ? cart : [cart];
+    const currentCache = get().productById || [];
 
-    const missingIds = ids.filter((id) => !currentCache[id]);
-
-    if (missingIds.length === 0) return;
+    const missingIds = items
+      .map((c) => c?.product || c?.productId)
+      .filter((id) => !currentCache.some((p) => p.id === id));
 
     try {
-      set({ loading: true });
-      const promises = ids.map((id) =>
-        fetch(`https://dummyjson.com/products/${id}`).then((r) => r.json()),
-      );
-      const data = await Promise.all(promises);
+      if (missingIds.length > 0) set({ loading: true });
 
-      const newData = data.map((d, i) => ({
-        ...d,
-        quantity: cart[i].quantity,
-      }));
+      const fetched = await Promise.all(
+        missingIds.map((id) =>
+          fetch(`https://dummyjson.com/products/${id}`).then((r) => r.json()),
+        ),
+      );
+
+      const combinedPool = [...currentCache, ...fetched];
+
+      const newData = items
+        .map((c) => {
+          const id = c?.product || c?.productId;
+          if (!id) return null;
+          const product = combinedPool.find((p) => p.id === id);
+          return product ? { ...product, quantity: c?.quantity || null } : null;
+        })
+        .filter(Boolean);
 
       set({ productById: newData, loading: false });
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error(error);
       set({ loading: false });
     }
   },

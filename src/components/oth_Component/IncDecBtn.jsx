@@ -17,11 +17,11 @@ function IncDecBtn({ user, productId, quantity }) {
 
   return (
     <>
-      <div className="h-8 flex items-center justify-around gap-3 bg-gray-50 rounded-lg p-1 border border-gray-200">
+      <div className="h-6 flex items-stretch justify-around gap-3 bg-gray-50 rounded-lg border border-gray-200">
         <button
           onClick={handleDecrease}
           disabled={quantity === 0}
-          className="flex items-center justify-center bg-white rounded shadow-sm text-gray-600 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" >
+          className="flex items-center aspect-square justify-center bg-white rounded shadow-sm text-gray-600 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" >
           <FaMinus size={10} />
         </button>
 
@@ -31,7 +31,7 @@ function IncDecBtn({ user, productId, quantity }) {
 
         <button
           onClick={handleAdd}
-          className=" flex items-center justify-center bg-white rounded shadow-sm text-gray-600 hover:text-blue-600 transition-colors"
+          className=" flex items-center justify-center aspect-square bg-white rounded shadow-sm text-gray-600 hover:text-blue-600 transition-colors"
         >
           <FaPlus size={10} />
         </button>

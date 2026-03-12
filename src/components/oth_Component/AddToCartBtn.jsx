@@ -1,40 +1,45 @@
+import React, { useEffect, useId } from 'react'
 import { MdOutlineShoppingBag } from "react-icons/md";
-import { useCartStore } from "../../store/cartStore";
-import { useAuthStore } from "../../store/loginSignupStore";
-import IncDecBtn from "./IncDecBtn";
+import { useCartStore } from '../../store/cartStore';
+import { useAuthStore } from '../../store/loginSignupStore';
 
-function AddToCartBtn({ productId }) {
-  const user = useAuthStore((state) => state.user);
+function AddToCartBtn({ product }) {
+  const { user } = useAuthStore();
+  const { getUserCart, addToCart, cart, removeFromCart } = useCartStore();
+  
+  const inCart = cart?.find(c => String(c?.product) === String(product?.id));
 
-  const cart = useCartStore((state) => state.cart);
-  const addToCart = useCartStore((state) => state.addToCart);
+  useEffect(() => {
+    if (cart.length === 0 || !cart) return;
+    async function getData() {
+      await getUserCart(user.id);
+    }
+    getData();
+  }, [])
+  const handleCart = (e) => {
+    if (!useId) return alert("Please login to add items to cart");
 
-  const cartItem = cart.find((c) => String(c.product) === String(productId));
-  const quantity = cartItem ? cartItem.quantity : 0;
-  const isInCart = quantity > 0;
+    const productId = e.currentTarget.dataset.id;
+    const inCart = cart.find(c => String(c.product) === String(productId));
 
-  const handleAdd =async()=>{
-    await addToCart(user.id,productId)
-  }
+    if (inCart) {
+      removeFromCart(user.id, productId);
+    } else {
+      addToCart(user.id, productId, 1);
+    }
+  };
 
   return (
-    <div onClick={(e) => e.preventDefault()}>
-      {!isInCart ? (
-        <button
-          className="bg-cyan-700 hover:bg-cyan-800 text-white text-sm font-semibold py-2 px-4 rounded-lg shadow-md flex items-center gap-2 transition-transform active:scale-95"
-          onClick={handleAdd}
-        >
-          <span>Add</span> <MdOutlineShoppingBag />
-        </button>
-      ) : (
-        <IncDecBtn
-          quantity={quantity}
-          user={user}
-          productId={productId}
-        />
-      )}
-    </div>
-  );
+    <>
+      <button
+        data-id={product.id}
+        className={`${user ? (inCart ? "bg-red-700" : "bg-cyan-700") : "bg-cyan-700"} text-white text-sm font-semibold py-2 px-4 rounded-lg shadow-md flex items-center gap-2 transition-all active:scale-95`}
+        onClick={handleCart}
+      >
+        <span>{inCart ? "Remove" : "Add"}</span> <MdOutlineShoppingBag />
+      </button>
+    </>
+  )
 }
 
 export default AddToCartBtn

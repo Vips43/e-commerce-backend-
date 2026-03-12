@@ -69,13 +69,12 @@ function UserWishlist({ setShow, show }) {
             {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto p-6 scroll-smooth bg-gray-50/50">
               {wishlistProducts?.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-3 md:gap-6">
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3 md:gap-6">
                   {wishlistProducts.map((product) => (
-                    <UserWishlistCard
+                    <UserWishlistCard 
                       key={product.id}
                       product={product}
-                      userId={user?.id}
-                      removeWishlist={removeWishlist} />
+                      userId={user?.id} />
                   ))}
                 </div>
               ) : (
