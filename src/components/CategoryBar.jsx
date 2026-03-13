@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { motion } from 'framer-motion';
 import { useDummyStore } from '../store/dummyStore';
 
-function CategoryBar() {
+const CategoryBar = memo(() => {
   const categories = useDummyStore(state => state.categories);
   const setCategories = useDummyStore(state => state.setCategories);
   const getCatsByName = useDummyStore(state => state.getCatsByName);
@@ -17,7 +17,9 @@ function CategoryBar() {
     };
     fetchCategories();
   }, [setCategories]);
+  
   const [active, setActive] = useState(categories?.[0] || '');
+
   useEffect(() => {
     if (categories && categories.length > 0 && !active) {
       setActive(categories?.[0]);
@@ -84,7 +86,7 @@ function CategoryBar() {
         ))}
       </ToggleButtonGroup>
     </div>
-  );
-}
+  )
+})
 
 export default CategoryBar;

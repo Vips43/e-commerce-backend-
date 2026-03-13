@@ -5,7 +5,8 @@ import { useWishStore } from "../store/wishlistStore";
 import { useEffect } from "react";
 
 function UserWishlistCard({ product, userId }) {
-  const { removeWishlist, getWishlist } = useWishStore();
+  const removeWishlist = useWishStore(s=>s.removeWishlist)
+  const getWishlist = useWishStore(s=>s.getWishlist)
   
   useEffect(() => {
     async function getData() {

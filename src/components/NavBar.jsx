@@ -20,9 +20,10 @@ function NavBar() {
   const navigate = useNavigate();
 
   const user = useAuthStore(state => state.user)
-  const { getWishlist, wishlist } = useWishStore();
-  const { cart, getUserCart } = useCartStore();
-  const { fetchProductById } = useDummyStore();
+  const getWishlist = useWishStore(s => s.getWishlist)
+  const getUserCart = useCartStore(s => s.getUserCart)
+  const cart = useCartStore(s => s.cart);
+  const fetchProductById = useDummyStore(s => s.fetchProductById);
 
   useEffect(() => {
     async function getdata() {

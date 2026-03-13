@@ -17,8 +17,9 @@ function ProductCard() {
   const removeWishlist = useWishStore(state => state.removeWishlist);
   const getWishlist = useWishStore(state => state.getWishlist);
   const wishlist = useWishStore(state => state.wishlist);
-  const { catsByName, loading } = useDummyStore();
-  const { cart } = useCartStore();
+  const catsByName = useDummyStore(s => s.catsByName)
+  const loading = useDummyStore(s => s.loading);
+  const cart = useCartStore(s => s.cart);
 
   useEffect(() => {
     if (user?.id) {
@@ -76,7 +77,7 @@ function ProductCard() {
               <div className="px-3 md:px-4 lg:px-5 py-3">
                 <div className="flex items-center space-x-1 mb-2">
                   <div className="flex text-yellow-400 text-xs">
-                    {pr ? "★★★★★☆☆☆☆☆".slice(5-rating, 10-rating) : <Skeleton width={60} />}
+                    {pr ? "★★★★★☆☆☆☆☆".slice(5 - rating, 10 - rating) : <Skeleton width={60} />}
                   </div>
                   <span className="text-xs text-gray-400">
                     {pr ? `(${pr.reviews?.length || 0} reviews)` : <Skeleton width={40} />}

@@ -26,5 +26,5 @@ app.use("/auth", authRoutes);
 app.use("/user", cwRoutes);
 
 app.listen(port, () => {
-  console.log(`Backend running at http://localhost:${port}`);
+  console.log(`Backend running at http://localhost: ${port}`);
 });

@@ -11,10 +11,15 @@ import UserWishlistCard from '../components/UserWishlistCard';
 function UserInfo() {
   const [activeTab, setActiveTab] = useState(0);
 
-  const { getUserCart, cart } = useCartStore();
-  const { getLoggedStatus, user } = useAuthStore();
-  const { getWishlist, wishlist } = useWishStore();
-  const { productById, fetchProductById, loading } = useDummyStore();
+  const getUserCart = useCartStore(s => s.getUserCart)
+  const cart = useCartStore(s => s.cart)
+  const getLoggedStatus = useAuthStore(s => s.getLoggedStatus)
+  const user = useAuthStore(s => s.user)
+  const getWishlist = useWishStore(s => s.getWishlist)
+  const wishlist = useWishStore(s => s.wishlist)
+  const productById = useDummyStore(s => s.productById)
+  const fetchProductById = useDummyStore(s => s.fetchProductById)
+  const loading = useDummyStore(s => s.loading)
 
   const [qty, setQty] = useState([]);
 

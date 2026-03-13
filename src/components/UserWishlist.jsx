@@ -8,9 +8,10 @@ import { useAuthStore } from "../store/loginSignupStore";
 import { useDummyStore } from "../store/dummyStore";
 
 function UserWishlist({ setShow, show }) {
-  const { user } = useAuthStore();
-  const { wishlist, getWishlist, removeWishlist } = useWishStore();
-  const { catsByName } = useDummyStore();
+  const user = useAuthStore(s => s.user);
+  const wishlist = useWishStore(s => s.wishlist)
+  const getWishlist = useWishStore(s => s.getWishlist)
+  const catsByName = useDummyStore(s => s.catsByName);
 
   useEffect(() => {
     if (show && user?.id) {
@@ -71,7 +72,7 @@ function UserWishlist({ setShow, show }) {
               {wishlistProducts?.length > 0 ? (
                 <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3 md:gap-6">
                   {wishlistProducts.map((product) => (
-                    <UserWishlistCard 
+                    <UserWishlistCard
                       key={product.id}
                       product={product}
                       userId={user?.id} />

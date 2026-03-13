@@ -6,10 +6,10 @@ import IncDecBtn from "./IncDecBtn";
 
 function CartCard({ item }) {
   const user = useAuthStore((state) => state.user);
-  const { removeFromCart } = useCartStore(); 
+  const removeFromCart = useCartStore(s => s.removeFromCart);
 
   const {
-    id: productId, 
+    id: productId,
     title = "",
     price = 0,
     thumbnail = "",
@@ -19,7 +19,7 @@ function CartCard({ item }) {
 
   const handleRemove = async () => {
     if (user?.id) {
-      await removeFromCart( user.id,productId);
+      await removeFromCart(user.id, productId);
     }
   };
 
@@ -34,7 +34,7 @@ function CartCard({ item }) {
       </div>
 
       <div className="flex flex-col flex-1 h-28 sm:h-32 justify-between">
-     
+
         <div className="flex justify-between items-start">
           <div className="pr-2">
             <h5 className="font-semibold text-gray-800 line-clamp-1 text-base" title={title} >
@@ -56,7 +56,7 @@ function CartCard({ item }) {
         </div>
 
         <div className="flex flex-col gap-2 items-start justify-between mt-auto">
-       
+
           <div className="text-right flex justify-between w-full items-center">
             <p className="text-xs text-gray-400 font-medium">Total Price</p>
             <p className="text-lg font-bold text-gray-900">

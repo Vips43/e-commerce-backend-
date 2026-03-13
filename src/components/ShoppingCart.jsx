@@ -5,9 +5,11 @@ import { useCartStore } from "../store/cartStore";
 import { useAuthStore } from "../store/loginSignupStore";
 
 function ShoppingCart() {
-  const { cart, emptyCart, getUserCart } = useCartStore();
-  const { productById } = useDummyStore();
-  const { user } = useAuthStore();
+  const cart = useCartStore(s => s.cart)
+  const getUserCart = useCartStore(s => s.getUserCart)
+  const emptyCart = useCartStore(s => s.emptyCart)
+  const productById = useDummyStore(s => s.productById);
+  const user = useAuthStore(s => s.user);
 
   async function handleEmpty() {
     if (user?.id) await emptyCart(user.id);

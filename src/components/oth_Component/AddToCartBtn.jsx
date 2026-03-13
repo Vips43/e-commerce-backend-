@@ -4,9 +4,12 @@ import { useCartStore } from '../../store/cartStore';
 import { useAuthStore } from '../../store/loginSignupStore';
 
 function AddToCartBtn({ product }) {
-  const { user } = useAuthStore();
-  const { getUserCart, addToCart, cart, removeFromCart } = useCartStore();
-  
+  const user = useAuthStore(s => s.user);
+  const getUserCart = useCartStore(s => s.getUserCart)
+  const addToCart = useCartStore(s => s.addToCart)
+  const cart = useCartStore(s => s.cart)
+  const removeFromCart = useCartStore(s => s.removeFromCart)
+
   const inCart = cart?.find(c => String(c?.product) === String(product?.id));
 
   useEffect(() => {
