@@ -16,7 +16,7 @@ productRoute.get("/categories/:id", async (req, res) => {
 
 async function fetchFunc(params, id = "") {
   try {
-    const URL = `${url}/products/${params}${id}`;
+    const URL = `${url}/products/${params}${id}?limit=10`;
     console.log(URL)
     const res = await fetch(`${URL}`);
     const result = await res.json();

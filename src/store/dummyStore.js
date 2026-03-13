@@ -7,7 +7,10 @@ export const useDummyStore = create((set, get) => ({
   catsByName: [],
   productById: [],
   cartProducts: [],
+  search: [],
+  productCache: {},
   loading: false,
+  err: null,
 
   setCategories: async () => {
     if (get().categories.length > 0) return;
@@ -38,38 +41,67 @@ export const useDummyStore = create((set, get) => ({
   },
 
   fetchProductById: async (cart) => {
-    if (!cart) return;
-    const items = Array.isArray(cart) ? cart : [cart];
-    const currentCache = get().productById || [];
+    if (!cart || cart.length === 0) {
+      set({ productById: [] });
+      return;
+    }
 
-    const missingIds = items
-      .map((c) => c?.product || c?.productId)
-      .filter((id) => !currentCache.some((p) => p.id === id));
+    const items = Array.isArray(cart) ? cart : [cart];
+    const cache = get().productCache;
+
+    const missingIds = [
+      ...new Set(
+        items
+          .map((c) => c?.product || c?.productId)
+          .filter((id) => id != null && !cache[id]),
+      ),
+    ];
 
     try {
       if (missingIds.length > 0) set({ loading: true });
 
-      const fetched = await Promise.all(
+      const fetchedProducts = await Promise.all(
         missingIds.map((id) =>
           fetch(`https://dummyjson.com/products/${id}`).then((r) => r.json()),
         ),
       );
 
-      const combinedPool = [...currentCache, ...fetched];
+      const updatedCache = { ...cache };
+      fetchedProducts.forEach((p) => {
+        if (p?.id) updatedCache[p.id] = p;
+      });
 
       const newData = items
         .map((c) => {
           const id = c?.product || c?.productId;
-          if (!id) return null;
-          const product = combinedPool.find((p) => p.id === id);
+          const product = updatedCache[id];
           return product ? { ...product, quantity: c?.quantity || null } : null;
         })
         .filter(Boolean);
 
-      set({ productById: newData, loading: false });
+      set({
+        productCache: updatedCache,
+        productById: newData,
+        loading: false,
+      });
     } catch (error) {
       console.error(error);
       set({ loading: false });
+    }
+  },
+  fetchSearch: async (query) => {
+    if (!query) return;
+    try {
+      set({ loading: true });
+      const res = await fetch(
+        `https://dummyjson.com/products/search?q=${query}`,
+      );
+      const data = await res.json();
+
+      set({ search: data.products, loading: false });
+    } catch (error) {
+      console.error("Error in fetching search results", error);
+      set({ err: error, loading: false });
     }
   },
 }));

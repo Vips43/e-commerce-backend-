@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import UserCartProducts from '../components/user/UserCartProducts';
-import { FaRegUserCircle } from "react-icons/fa";
-import { Tab, Tabs, Box, Typography } from '@mui/material';
-import { FaShoppingCart, FaHeart } from "react-icons/fa";
+import { FaRegUserCircle, FaShoppingCart, FaHeart, FaRegHeart } from "react-icons/fa";
+import { Tab, Tabs, Box } from '@mui/material';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/loginSignupStore';
 import { useDummyStore } from '../store/dummyStore';
@@ -24,8 +23,7 @@ function UserInfo() {
   };
 
   useEffect(() => {
-    if (cart)
-      setQty(cart?.map(c => c.quantity));
+    if (cart) setQty(cart?.map(c => c.quantity));
     getLoggedStatus();
   }, []);
 
@@ -35,23 +33,23 @@ function UserInfo() {
         await getUserCart();
         await fetchProductById(cart);
       } else if (activeTab === 0) {
-        await getWishlist(user.id)
+        await getWishlist(user?.id);
         await fetchProductById(wishlist);
       }
     };
     getData();
   }, [activeTab, getUserCart]);
 
-  if (loading) {
-    return (<div className='w-full h-[calc(100dvh-8rem)] grid place-items-center'><div className='w-12 aspect-square rounded-full border-y-4 border-y-blue-600 animate-spin'></div></div>)
-  }
+  const LoadingSpinner = () => (
+    <div className='w-full col-span-full min-h-[50vh] flex justify-center items-center'>
+      <div className='w-12 aspect-square rounded-full border-y-4 border-y-blue-600 animate-spin'></div>
+    </div>
+  );
 
   return (
     <div className='grid grid-cols-[80px_1fr_10px] md:grid-cols-[260px_1fr] min-h-screen bg-gray-50 transition-all duration-300'>
       <aside className='bg-white border-r border-gray-200 py-6 px-1 md:px-4 sticky top-0 h-screen overflow-y-auto flex flex-col items-center md:items-stretch shadow-sm'>
-        <h6
-          className="mb-8 px-2 font-semibold text-2xl text-blue-500  tracking-wide inline-flex items-center gap-4 capitalize"
-        >
+        <h6 className="mb-8 px-2 font-semibold text-2xl text-blue-500 tracking-wide inline-flex items-center gap-4 capitalize">
           <FaRegUserCircle /> <span className='hidden md:block'> {user?.name}</span>
         </h6>
 
@@ -157,14 +155,16 @@ function UserInfo() {
                 Your Wishlist
               </h5>
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 divide-y grid gap-3 grid-cols-[repeat(auto-fill,minmax(170px,1fr))] divide-gray-100">
-                {productById.length > 0 ? (
+                {loading ? (
+                  <LoadingSpinner />
+                ) : productById.length > 0 ? (
                   productById.map((item, i) => (
-                    <UserWishlistCard userId={user.id} key={i} quantity={qty} product={item} />
+                    <UserWishlistCard userId={user?.id} key={i} quantity={qty} product={item} />
                   ))
                 ) : (
-                  <div className="py-16 flex flex-col items-center justify-center">
-                    <FaShoppingCart className="text-gray-200 text-6xl mb-4" />
-                    <p className="text-lg text-gray-500 font-medium">Your cart is empty</p>
+                  <div className="py-16 col-span-full flex flex-col items-center justify-center">
+                    <FaRegHeart className="text-gray-200 text-6xl mb-4" />
+                    <p className="text-lg text-gray-500 font-medium">Your wishlist is empty</p>
                   </div>
                 )}
               </div>
@@ -177,7 +177,9 @@ function UserInfo() {
                 Shopping Cart
               </h5>
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 px-6 divide-y divide-gray-100">
-                {productById.length > 0 ? (
+                {loading ? (
+                  <LoadingSpinner />
+                ) : productById.length > 0 ? (
                   productById.map((item, i) => (
                     <UserCartProducts key={i} quantity={qty} item={item} />
                   ))

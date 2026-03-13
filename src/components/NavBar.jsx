@@ -5,17 +5,19 @@ import User from "./User";
 import logo from '../assets/Flipkar-logo.svg'
 import ShoppingCart from "./ShoppingCart";
 import { useAuthStore } from "../store/loginSignupStore";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useWishStore } from "../store/wishlistStore";
 import UserWishlist from "./UserWishlist";
 import { useCartStore } from "../store/cartStore";
 import { useDummyStore } from "../store/dummyStore";
+import SearchInput from "./oth_Component/search/SearchInput";
 
 function NavBar() {
   const [show, setShow] = useState(false)
   const [cartDropDown, setCartDropDown] = useState(false);
   const cartRef = useRef(null);
+  const navigate = useNavigate();
 
   const user = useAuthStore(state => state.user)
   const { getWishlist, wishlist } = useWishStore();
@@ -56,23 +58,12 @@ function NavBar() {
   return (
     <nav className="z-100 bg-white border-b border-gray-100 shadow-sm">
       <div className="max-w-6xl mx-auto md:px-4 h-16 flex items-center gap-2 md:gap-6">
-        <div className="shrink-0">
-          <img src={logo} alt="Logo" className="h-8 w-auto object-contain" />
+        <div className="shrink-0 cursor-pointer text-blue-500" onClick={() => navigate(`/`)}>
+          {/* <img src={logo} alt="Logo" className="h-8 w-auto object-contain" /> */}
+          <span className="text-2xl font-bold pl-4">E-Comm</span>
         </div>
 
-        <div className="relative grow max-w-2xl group">
-          <div className="relative flex items-center">
-            <input id="inputTag" type="search" placeholder="Search for products, brands and more" className="w-full bg-gray-100 border-none rounded-lg py-2 pl-10 pr-4 text-sm focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all" />
-            <div className="absolute left-3 text-gray-400">
-              <CiSearch />
-            </div>
-          </div>
-
-          <ul
-            id="inputDropDown"
-            className="absolute top-full left-0 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-xl hidden z-50 overflow-hidden"
-          ></ul>
-        </div>
+        <SearchInput />
 
         <div className="flex items-center gap-1 md:gap-4">
           <section className="group relative flex items-center px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">

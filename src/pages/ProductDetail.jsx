@@ -9,15 +9,18 @@ export default function ProductDetails() {
   const [item, setItem] = useState([])
   document.title = "Product | details";
   const { productName } = useParams();
+  const [load, setLoad] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
+      setLoad(true);
       const res = await fetch(`https://dummyjson.com/products/search?q=${productName}`);
       const data = await res.json();
 
-      if(!res.ok) return console.log(res)
+      if (!res.ok) return console.log(res)
 
-      console.log(data,productName)
+      console.log(data, productName)
+      setLoad(false);
       localStorage.setItem("prdetails", JSON.stringify(data));
       setItem(data.products?.[0] || null);
     };
@@ -26,6 +29,11 @@ export default function ProductDetails() {
 
   if (!item) {
     return;
+  }
+  if (load) {
+    return <div className='w-full col-span-full min-h-[50vh] flex justify-center items-center'>
+      <div className='w-12 aspect-square rounded-full border-y-4 border-y-blue-600 animate-spin'></div>
+    </div>
   }
 
   return (
