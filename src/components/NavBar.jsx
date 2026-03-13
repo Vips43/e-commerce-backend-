@@ -14,7 +14,7 @@ import { useDummyStore } from "../store/dummyStore";
 import SearchInput from "./oth_Component/search/SearchInput";
 
 function NavBar() {
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(false);
   const [cartDropDown, setCartDropDown] = useState(false);
   const cartRef = useRef(null);
   const navigate = useNavigate();
