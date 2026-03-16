@@ -18,7 +18,7 @@ function ProductCard() {
   const getWishlist = useWishStore(state => state.getWishlist);
   const wishlist = useWishStore(state => state.wishlist);
   const catsByName = useDummyStore(s => s.catsByName)
-  const loading = useDummyStore(s => s.loading);
+  const loading = useDummyStore(s => s.isCategoryLoading);
   const cart = useCartStore(s => s.cart);
 
   useEffect(() => {
@@ -120,4 +120,4 @@ function ProductCard() {
   );
 }
 
-export default ProductCard;
+export default React.memo(ProductCard);

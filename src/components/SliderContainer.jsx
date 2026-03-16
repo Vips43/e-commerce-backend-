@@ -10,7 +10,7 @@ function SliderContainer() {
   const navigate = useNavigate();
   const fetchRandom = useDummyStore(s => s.fetchRandom)
   const random = useDummyStore(s => s.random)
-  const loading = useDummyStore(s => s.loading)
+  const loading = useDummyStore(s => s.isRandomLoading)
   const setRefresh = useDummyStore(s => s.setRefresh)
 
   useEffect(() => {

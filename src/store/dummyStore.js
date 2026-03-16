@@ -15,6 +15,8 @@ export const useDummyStore = create((set, get) => ({
   skip: 0,
 
   loading: false,
+  isRandomLoading: false, 
+  isCategoryLoading: false,
   err: null,
 
   setCategories: async () => {
@@ -33,15 +35,15 @@ export const useDummyStore = create((set, get) => ({
   getCatsByName: async (id) => {
     if (!id || get().catsByName[id]) return;
 
-    set({ loading: true });
+    set({ isCategoryLoading: true });
     try {
       const res = await fetch(`${backendUrl}/product/categories/${id}`);
       const data = await res.json();
 
-      set({ catsByName: data, loading: false });
+      set({ catsByName: data, isCategoryLoading: false });
     } catch (error) {
       console.error("error in fetching categories:", error);
-      set({ error: error, loading: false });
+      set({ error: error, isCategoryLoading: false });
     }
   },
 
@@ -116,12 +118,12 @@ export const useDummyStore = create((set, get) => ({
     const local = JSON.parse(localStorage.getItem(cacheKey));
 
     if (!refresh && local) {
-      set({ random: local, loading: false });
+      set({ random: local, isRandomLoading: false });
       return;
     }
 
     try {
-      set({ loading: true });
+      set({ isRandomLoading: true });
       const currentSkip = refresh ? skip + 25 : skip;
       const res = await fetch(
         `https://dummyjson.com/products?sortBy=title&order=asc&skip=${currentSkip}&limit=10&select=title,price,thumbnail`,
@@ -132,13 +134,13 @@ export const useDummyStore = create((set, get) => ({
       console.log("live served", data.products);
       set({
         random: data.products,
-        loading: false,
+        isRandomLoading: false,
         refresh: false,
         skip: currentSkip,
       });
     } catch (error) {
       console.error("Error fetching random", error);
-      set({ loading: false, refresh: false });
+      set({ isRandomLoading: false, refresh: false });
     }
   },
   setRefresh: () => {

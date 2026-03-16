@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { lazy, Suspense, useEffect, useState } from 'react'
 import { useAuthStore } from '../store/loginSignupStore'
-import ProductCard from '../components/ProductCard'
-import CategoryBar from '../components/CategoryBar'
-import ImageSlider from '../components/ImageSlider'
-import SliderContainer from '../components/SliderContainer'
+
+const ProductCard = lazy(() => import('../components/ProductCard'))
+const CategoryBar = lazy(() => import('../components/CategoryBar'))
+const ImageSlider = lazy(() => import('../components/ImageSlider'))
+const SliderContainer = lazy(() => import('../components/SliderContainer'))
 
 function HomePage() {
   const getLoggedStatus = useAuthStore(state => state.getLoggedStatus)
@@ -13,10 +14,12 @@ function HomePage() {
 
   return (
     <div>
-      <ImageSlider />
-      <SliderContainer />
-      <CategoryBar />
-      <ProductCard />
+      <Suspense fallback={<p>Loading...</p>}>
+        <ImageSlider />
+        <SliderContainer />
+        <CategoryBar />
+        <ProductCard />
+      </Suspense>
     </div>
   )
 }
