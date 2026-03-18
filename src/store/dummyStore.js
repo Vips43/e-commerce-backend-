@@ -1,4 +1,3 @@
-import { random } from "lodash";
 import { create } from "zustand";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
