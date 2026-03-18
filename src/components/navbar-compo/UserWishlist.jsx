@@ -2,10 +2,9 @@ import React, { useEffect } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { GrClose } from "react-icons/gr";
 import { motion, AnimatePresence } from "framer-motion";
-import UserWishlistCard from "./UserWishlistCard";
-import { useWishStore } from "../store/wishlistStore";
-import { useAuthStore } from "../store/loginSignupStore";
-import { useDummyStore } from "../store/dummyStore";
+import { useAuthStore } from "../../store/loginSignupStore";
+import { useDummyStore } from "../../store/dummyStore";
+import { useWishStore } from "../../store/wishlistStore";
 
 function UserWishlist({ setShow, show }) {
   const user = useAuthStore(s => s.user);

@@ -14,7 +14,7 @@ function HomePage() {
 
   return (
     <div>
-      <Suspense fallback={<p>Loading...</p>}>
+      <Suspense fallback={<div className='min-h-125 content-center'><p className='w-20 aspect-square rounded-full border-t-4 mx-auto animate-spin'></p></div>}>
         <ImageSlider />
         <SliderContainer />
         <CategoryBar />
@@ -24,4 +24,4 @@ function HomePage() {
   )
 }
 
-export default HomePage
+export default HomePage;

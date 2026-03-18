@@ -51,7 +51,8 @@ export const useCartStore = create((set, get) => ({
 
     if (itemIndex === -1) return;
 
-    if (currentCart[itemIndex].quantity <= 1) return;
+    if (currentCart[itemIndex].quantity <= 1)
+      return get().removeFromCart(userId, productId);
 
     let optimisticCart = [...currentCart];
     optimisticCart[itemIndex] = {

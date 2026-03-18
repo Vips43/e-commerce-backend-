@@ -3,13 +3,15 @@ import CartCard from "./oth_Component/CartCard";
 import { useDummyStore } from "../store/dummyStore";
 import { useCartStore } from "../store/cartStore";
 import { useAuthStore } from "../store/loginSignupStore";
+import { useNavigate } from "react-router-dom";
 
-function ShoppingCart() {
-  const cart = useCartStore(s => s.cart)
-  const getUserCart = useCartStore(s => s.getUserCart)
-  const emptyCart = useCartStore(s => s.emptyCart)
-  const productById = useDummyStore(s => s.productById);
-  const user = useAuthStore(s => s.user);
+function ShoppingCart({ active }) {
+  const navigate = useNavigate()
+  const cart = useCartStore((s) => s.cart);
+  const getUserCart = useCartStore((s) => s.getUserCart);
+  const emptyCart = useCartStore((s) => s.emptyCart);
+  const productById = useDummyStore((s) => s.productById);
+  const user = useAuthStore((s) => s.user);
 
   async function handleEmpty() {
     if (user?.id) await emptyCart(user.id);
@@ -22,18 +24,22 @@ function ShoppingCart() {
   }, [getUserCart, user?.id]);
 
   // Dynamically calculate totals based on real-time cart and product data
-  const subtotal = cart && cart.reduce((total, cartItem) => {
-    const productId = cartItem?.product || cartItem.productId;
-    const productData = productById.find((p) => p.id === productId);
-    const price = productData ? productData.price : 0;
-    return total + price * cartItem.quantity;
-  }, 0);
+  const subtotal =
+    cart &&
+    cart.reduce((total, cartItem) => {
+      const productId = cartItem?.product || cartItem.productId;
+      const productData = productById.find((p) => p.id === productId);
+      const price = productData ? productData.price : 0;
+      return total + price * cartItem.quantity;
+    }, 0);
 
   const gst = subtotal * 0.18;
   const totalAmount = subtotal + gst;
 
   return (
-    <section className="absolute top-full right-0 mt-2 w-96 transition-all duration-200 ease-out origin-top-right z-50 bg-gray-200 rounded-xl">
+    <section
+      className={`absolute top-full right-0 mt-2 w-96 transition-all duration-200 ease-out origin-top-right z-50 bg-gray-200 rounded-xl ${active ? "" : "invisible opacity-0 translate-y-3"}`}
+    >
       <div className="border border-gray-100  shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="p-3 border-b flex justify-between items-center">
@@ -92,7 +98,7 @@ function ShoppingCart() {
           </div>
           <button
             disabled={cart.length === 0}
-            className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-2 rounded-lg text-sm font-bold transition-colors"
+            className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-2 rounded-lg text-sm font-bold transition-colors" onClick={()=> navigate(`/checkout`)}
           >
             Checkout
           </button>

@@ -1,4 +1,5 @@
 import { Box, Chip, Typography } from "@mui/material";
+import AddToCartBtn from "./oth_Component/AddToCartBtn";
 
 function RightSection({ item }) {
   return (
@@ -25,8 +26,8 @@ function RightSection({ item }) {
         }}
       >
         <div className="flex items-center space-x-1 mb-2">
-          <div className="flex text-yellow-400 text-xs">
-            "★★★★★"
+          <div className="flex text-yellow-400 text-base">
+            {"★★★★★☆☆☆☆☆".slice(5 - item.rating, 10 - item.rating)}
           </div>
           <span className="text-xs text-gray-400">
             {item.reviews?.length} reviews
@@ -50,6 +51,7 @@ function RightSection({ item }) {
           {item.availabilityStatus}
         </Typography>
       </Box>
+      <AddToCartBtn product={item} />
     </>
   );
 }

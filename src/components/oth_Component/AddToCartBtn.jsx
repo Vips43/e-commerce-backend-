@@ -1,29 +1,33 @@
-import React, { useEffect, useId } from 'react'
+import React, { useEffect, useId } from "react";
 import { MdOutlineShoppingBag } from "react-icons/md";
-import { useCartStore } from '../../store/cartStore';
-import { useAuthStore } from '../../store/loginSignupStore';
+import { useCartStore } from "../../store/cartStore";
+import { useAuthStore } from "../../store/loginSignupStore";
 
 function AddToCartBtn({ product }) {
-  const user = useAuthStore(s => s.user);
-  const getUserCart = useCartStore(s => s.getUserCart)
-  const addToCart = useCartStore(s => s.addToCart)
-  const cart = useCartStore(s => s.cart)
-  const removeFromCart = useCartStore(s => s.removeFromCart)
+  const user = useAuthStore((s) => s.user);
+  const getUserCart = useCartStore((s) => s.getUserCart);
+  const addToCart = useCartStore((s) => s.addToCart);
+  const cart = useCartStore((s) => s.cart);
+  const removeFromCart = useCartStore((s) => s.removeFromCart);
 
-  const inCart = cart?.find(c => String(c?.product) === String(product?.id));
-
+  const inCart = cart?.find((c) => String(c?.product) === String(product?.id));
   useEffect(() => {
     if (cart.length === 0 || !cart) return;
+    const controller = new AbortController();
+    const { signal } = controller;
     async function getData() {
-      await getUserCart(user.id);
+      await getUserCart(user.id, signal);
     }
     getData();
-  }, [])
+
+    return () => controller.abort();
+  }, []);
+
   const handleCart = (e) => {
     if (!useId) return alert("Please login to add items to cart");
 
     const productId = e.currentTarget.dataset.id;
-    const inCart = cart.find(c => String(c.product) === String(productId));
+    const inCart = cart.find((c) => String(c.product) === String(productId));
 
     if (inCart) {
       removeFromCart(user.id, productId);
@@ -42,7 +46,7 @@ function AddToCartBtn({ product }) {
         <span>{inCart ? "Remove" : "Add"}</span> <MdOutlineShoppingBag />
       </button>
     </>
-  )
+  );
 }
 
-export default AddToCartBtn
+export default AddToCartBtn;

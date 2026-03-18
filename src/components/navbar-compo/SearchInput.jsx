@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CiSearch } from "react-icons/ci";
-import { useDummyStore } from "../../../store/dummyStore";
+import { useDummyStore } from "../../store/dummyStore";
 import { useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
 

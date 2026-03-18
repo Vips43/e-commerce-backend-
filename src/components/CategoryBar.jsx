@@ -8,7 +8,6 @@ const CategoryBar = memo(() => {
   const categories = useDummyStore(state => state.categories);
   const setCategories = useDummyStore(state => state.setCategories);
   const getCatsByName = useDummyStore(state => state.getCatsByName);
-  const catsByName = useDummyStore(state => state.catsByName);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -24,7 +23,6 @@ const CategoryBar = memo(() => {
       setActive(categories?.[0]);
       getCatsByName(categories[0]);
     }
-    console.log(catsByName)
   }, [categories]);
 
   const handleChange = (e, nextView) => {
