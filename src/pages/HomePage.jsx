@@ -9,20 +9,11 @@ const SliderContainer = lazy(() => import("../components/SliderContainer"));
 
 function HomePage() {
   const getLoggedStatus = useAuthStore((state) => state.getLoggedStatus);
-  const isCategoryLoading = useDummyStore((state) => state.isCategoryLoading);
-  const isRandomLoading = useDummyStore((state) => state.isRandomLoading);
-
+  
   useEffect(() => {
     getLoggedStatus();
   }, []);
 
-  if (isCategoryLoading || isRandomLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="w-20 aspect-square rounded-full border-t-4 border-blue-500 animate-spin"></p>
-      </div>
-    );
-  }
 
   return (
     <div>
