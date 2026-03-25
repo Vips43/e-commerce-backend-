@@ -2,10 +2,10 @@ import React, { lazy, Suspense, useEffect, useState } from "react";
 import { useAuthStore } from "../store/loginSignupStore";
 import { useDummyStore } from "../store/dummyStore";
 
-const ProductCard = lazy(() => import("../components/ProductCard"));
-const CategoryBar = lazy(() => import("../components/CategoryBar"));
 const ImageSlider = lazy(() => import("../components/ImageSlider"));
 const SliderContainer = lazy(() => import("../components/SliderContainer"));
+const CategoryBar = lazy(() => import("../components/CategoryBar"));
+const ProductCard = lazy(() => import("../components/ProductCard"));
 
 function HomePage() {
   const getLoggedStatus = useAuthStore((state) => state.getLoggedStatus);

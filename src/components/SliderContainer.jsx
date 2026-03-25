@@ -29,7 +29,7 @@ function SliderContainer() {
       <div className="flex justify-between items-center px-4 mb-6">
         <h2 className="text-xl font-bold text-white tracking-tight">Top Picks for you</h2>
         <button
-          className={`flex items-center gap-2 text-sm font-semibold text-amber-800 transition-all cursor-pointer ${loading ? 'opacity-50' : ''}`}
+          className={`flex items-center gap-2 text-sm font-semibold transition-all cursor-pointer ${loading ? 'opacity-50' : ''}`}
           onClick={debouncedRefresh}
         >
           <span>
