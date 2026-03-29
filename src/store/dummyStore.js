@@ -12,12 +12,14 @@ export const useDummyStore = create((set, get) => ({
   random: [],
   refresh: false,
   skip: 0,
+  activeCat:"",
 
   loading: false,
-  isRandomLoading: false, 
+  isRandomLoading: false,
   isCategoryLoading: false,
   err: null,
 
+  setActiveCat: (category) => set({ activeCat: category }),
   setCategories: async () => {
     if (get().categories.length > 0) return;
     try {
@@ -39,7 +41,15 @@ export const useDummyStore = create((set, get) => ({
       const res = await fetch(`${backendUrl}/product/categories/${id}`);
       const data = await res.json();
 
-      set({ catsByName: data, isCategoryLoading: false });
+      // set({ catsByName: data, isCategoryLoading: false });
+
+      set((state) => ({
+        catsByName: {
+          ...state.catsByName,
+          [id]: data,
+        },
+        isCategoryLoading: false,
+      }));
     } catch (error) {
       console.error("error in fetching categories:", error);
       set({ error: error, isCategoryLoading: false });

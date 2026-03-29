@@ -4,10 +4,10 @@ import { useAuthStore } from "../store/loginSignupStore";
 import { useDummyStore } from "../store/dummyStore";
 import Skeleton from "@mui/material/Skeleton";
 import WishlistButton from "./oth_Component/WishlistButton";
-import { useCartStore } from "../store/cartStore";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import AddToCartBtn from "./oth_Component/AddToCartBtn";
+import { useShallow } from "zustand/react/shallow";
 
 function ProductCard() {
   const [server, setServer] = useState(false);
@@ -16,13 +16,17 @@ function ProductCard() {
   const user = useAuthStore((state) => state.user);
   const setAddWishlist = useWishStore((state) => state.setAddWishlist);
   const removeWishlist = useWishStore((state) => state.removeWishlist);
-  const getWishlist = useWishStore((state) => state.getWishlist);
   const wishlist = useWishStore((state) => state.wishlist);
-  const catsByName = useDummyStore((s) => s.catsByName);
-  const loading = useDummyStore((s) => s.isCategoryLoading);
-  const cart = useCartStore((s) => s.cart);
+  const activeCat = useDummyStore((state) => state.activeCat);
+  const { catsByName, isCategoryLoading } = useDummyStore(
+    useShallow((s) => ({
+      catsByName: s.catsByName,
+      isCategoryLoading: s.isCategoryLoading,
+    })),
+  );
 
   useEffect(() => {
+    //production server starter loader
     async function startBackend() {
       setServer(true);
       try {
@@ -36,12 +40,6 @@ function ProductCard() {
     startBackend();
   }, []);
 
-  useEffect(() => {
-    if (user?.id) {
-      getWishlist(user.id);
-    }
-  }, [user?.id, getWishlist]);
-
   const handleWishlist = (productId, isWishlisted) => {
     if (!user) return alert("Please login to access wishlist");
     if (isWishlisted) {
@@ -50,10 +48,11 @@ function ProductCard() {
       setAddWishlist(user.id, productId);
     }
   };
-
-  const displayProducts = loading
-    ? Array.from(new Array(8))
-    : catsByName?.data?.products || [];
+  const currentCategoryData = catsByName[activeCat];
+  const displayProducts =
+    isCategoryLoading && !currentCategoryData
+      ? Array.from(new Array(8))
+      : currentCategoryData?.data?.products || [];
 
   const variants = {
     hidden: { opacity: 0, y: 20 },
@@ -69,7 +68,10 @@ function ProductCard() {
     return (
       <div className="min-h-125 content-center">
         <p className="w-20 aspect-square rounded-full border-t-4 mx-auto animate-spin"></p>
-      <p className="text-center my-5">Booting up server please wait <span className="animate-bounce">...</span></p>
+        <p className="text-center my-5">
+          Booting up server please wait updato 15sec{" "}
+          <span className="animate-bounce">...</span>
+        </p>
       </div>
     );
   }
@@ -156,7 +158,7 @@ function ProductCard() {
                   </p>
 
                   {pr ? (
-                    <AddToCartBtn product={pr} user={user} cart={cart} />
+                    <AddToCartBtn product={pr} />
                   ) : (
                     <Skeleton variant="rounded" width={80} height={35} />
                   )}

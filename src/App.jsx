@@ -9,8 +9,11 @@ import UserInfo from "./pages/UserInfo";
 import Checkout from "./components/checkout/Checkout";
 import { useAuthStore } from "./store/loginSignupStore";
 import { useEffect } from "react";
+import { useCartStore } from "./store/cartStore";
+import { useWishStore } from "./store/wishlistStore";
 
-const router = createBrowserRouter([{
+const router = createBrowserRouter([
+  {
     path: "/",
     element: <MainLayout />,
     children: [
@@ -25,9 +28,18 @@ const router = createBrowserRouter([{
 ]);
 function App() {
   const getLoggedStatus = useAuthStore((state) => state.getLoggedStatus);
+  const user = useAuthStore((state) => state.user);
+  const getWishlist = useWishStore((state) => state.getWishlist);
+  const getUserCart = useCartStore((s) => s.getUserCart);
+
   useEffect(() => {
     getLoggedStatus();
-  }, []);
+
+    if (user?.id) {
+      getWishlist(user.id);
+      getUserCart(user.id);
+    }
+  }, [user?.id]);
   return (
     <>
       <RouterProvider router={router} />

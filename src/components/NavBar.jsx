@@ -1,7 +1,6 @@
 import { useAuthStore } from "../store/loginSignupStore";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useWishStore } from "../store/wishlistStore";
+import { useState } from "react";
 import { useCartStore } from "../store/cartStore";
 import SearchInput from "./navbar-compo/SearchInput";
 import NavUser from "./navbar-compo/NavUser";
@@ -13,19 +12,8 @@ function NavBar() {
   const navigate = useNavigate();
 
   const user = useAuthStore((state) => state.user);
-  const getWishlist = useWishStore((s) => s.getWishlist);
-  const getUserCart = useCartStore((s) => s.getUserCart);
   const cart = useCartStore((s) => s.cart);
 
-  useEffect(() => {
-    async function getdata() {
-      if (user && user.id) {
-        await getWishlist(user.id);
-        await getUserCart(user.id);
-      }
-    }
-    getdata();
-  }, [user, getWishlist, getUserCart]);
 
   return (
     <nav className="z-100 bg-white border-b border-gray-100 shadow-sm">

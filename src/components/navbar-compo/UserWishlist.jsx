@@ -9,15 +9,8 @@ import { useDummyStore } from "../../store/dummyStore";
 
 function UserWishlist({ setShow, show }) {
   const user = useAuthStore(s => s.user);
-  const wishlist = useWishStore(s => s.wishlist)
-  const getWishlist = useWishStore(s => s.getWishlist)
+  const wishlist = useWishStore(s => s.wishlist);
   const catsByName = useDummyStore(s => s.catsByName);
-
-  useEffect(() => {
-    if (show && user?.id) {
-      getWishlist(user.id);
-    }
-  }, [show, user?.id, getWishlist]);
 
   const wishlistProducts = wishlist
     ?.map((item) => {

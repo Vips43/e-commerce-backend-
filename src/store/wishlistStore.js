@@ -8,9 +8,12 @@ export const useWishStore = create((set) => ({
   getWishlist: async (id) => {
     if (!id) return;
     try {
-      const res = await fetch(`${backendUrl}/user/wishlist/${id}`);
+      const res = await fetch(`${backendUrl}/user/wishlist/${id}`, {
+        method: "GET",
+      });
       const data = await res.json();
-      set({ wishlist: Array.isArray(data) ? data : (data.wishlist || []) });
+      console.log(data);
+      set({ wishlist: Array.isArray(data) ? data : data.wishlist || [] });
     } catch (error) {
       console.log("error in get wishlist", error);
     }

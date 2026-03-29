@@ -1,6 +1,5 @@
-import React, { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { useAuthStore } from "../store/loginSignupStore";
-import { useDummyStore } from "../store/dummyStore";
 
 const ImageSlider = lazy(() => import("../components/ImageSlider"));
 const SliderContainer = lazy(() => import("../components/SliderContainer"));

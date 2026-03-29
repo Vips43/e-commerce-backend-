@@ -8,26 +8,27 @@ const CategoryBar = memo(() => {
   const categories = useDummyStore(state => state.categories);
   const setCategories = useDummyStore(state => state.setCategories);
   const getCatsByName = useDummyStore(state => state.getCatsByName);
+  const setActiveCat = useDummyStore(state => state.setActiveCat);
+  const activeCat = useDummyStore(state => state.activeCat);
 
   useEffect(() => {
     const fetchCategories = async () => {
-      await setCategories(active);
+      await setCategories(activeCat);
     };
     fetchCategories();
   }, [setCategories]);
   
-  const [active, setActive] = useState(categories?.[0] || '');
 
   useEffect(() => {
-    if (categories && categories.length > 0 && !active) {
-      setActive(categories?.[0]);
+    if (categories && categories.length > 0 && !activeCat) {
+      setActiveCat(categories?.[0]);
       getCatsByName(categories[0]);
     }
   }, [categories]);
 
   const handleChange = (e, nextView) => {
     if (nextView !== null) {
-      setActive(nextView);
+      setActiveCat(nextView);
       getCatsByName(nextView);
     }
   };
@@ -36,7 +37,7 @@ const CategoryBar = memo(() => {
   return (
     <div className='p-2 overflow-x-auto scrollbar-hidden'>
       <ToggleButtonGroup
-        value={active}
+        value={activeCat}
         exclusive
         onChange={handleChange}
         aria-label="categories"
@@ -61,7 +62,7 @@ const CategoryBar = memo(() => {
               fontSize: "0.8rem",
               whiteSpace: "nowrap",
               textTransform: 'capitalize',
-              color: active === cat ? 'black' : 'gray',
+              color: activeCat === cat ? 'black' : 'gray',
               '&.Mui-selected': {
                 backgroundColor: 'transparent',
                 color: 'black',
@@ -72,7 +73,7 @@ const CategoryBar = memo(() => {
             }}
           >
             <span className="relative z-10">{cat}</span>
-            {active === cat && (
+            {activeCat === cat && (
               <motion.div
                 layoutId='pill'
                 transition={{ type: "spring", stiffness: 500, damping: 30 }}

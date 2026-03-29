@@ -5,23 +5,11 @@ import { useAuthStore } from "../../store/loginSignupStore";
 
 function AddToCartBtn({ product }) {
   const user = useAuthStore((s) => s.user);
-  const getUserCart = useCartStore((s) => s.getUserCart);
   const addToCart = useCartStore((s) => s.addToCart);
   const cart = useCartStore((s) => s.cart);
   const removeFromCart = useCartStore((s) => s.removeFromCart);
 
   const inCart = cart?.find((c) => String(c?.product) === String(product?.id));
-  useEffect(() => {
-    if (cart.length === 0 || !cart) return;
-    const controller = new AbortController();
-    const { signal } = controller;
-    async function getData() {
-      await getUserCart(user.id, signal);
-    }
-    getData();
-
-    return () => controller.abort();
-  }, []);
 
   const handleCart = (e) => {
     if (!useId) return alert("Please login to add items to cart");

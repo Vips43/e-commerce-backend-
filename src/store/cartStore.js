@@ -11,9 +11,11 @@ export const useCartStore = create((set, get) => ({
   getUserCart: async (userId) => {
     if (!userId) return;
     try {
+      
       set({ loading: true });
       const res = await fetch(`${backendUrl}/user/cart/${userId}`);
       const data = await res.json();
+      
       set({ cart: data, userCart: [], loading: false });
     } catch (error) {
       console.log("error fetching cart", error);
